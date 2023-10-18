@@ -2,5 +2,5 @@ America Norte	Alaska	Alberta	America Central	Estados Unidos Orientales	Groenland
 America Sur	Argentina	Brasil	Peru	Venezuela
 Europa	Gran Bretana	Islandia	Europa del Norte	Escandinavia	Europa del Sur	Ucrania	Europa Occidental
 Asia	Afghanistan	China	India	Irkutsk	Japon	Kamchatka	Medio Oriente	Mongolia	Siam	Siberia	Ural	Yakutsk
-Africa	Congo	Africa Oriental	Egipto	Madagascar	Africa del Norte	África del Sur
+Africa	Congo	Africa Oriental	Egipto	Madagascar	Africa del Norte	Africa del Sur
 Australia	Australia Oriental	Indonesia	Nueva Guinea	Australia Occidental

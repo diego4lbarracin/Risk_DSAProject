@@ -15,33 +15,79 @@ string Jugador::getColor() const { return colorJugador; }
 
 int Jugador::getEjercitos() const { return ejercitosJugador; }
 
-void Jugador::agregarEjercitos(int cantidad) { ejercitosJugador += cantidad; }
+list<Carta> Jugador::getCartas() const { return this->cartas; }
 
-bool Jugador::ocuparTerritorio(Territorio *territorio) {
+bool Jugador::ocuparTerritorio(Territorio territorio) {
+  territorio.agregarEjercitos(1);
+  this->ejercitosJugador--;
   territorios.push_back(territorio);
   return true;
 }
 
-bool Jugador::tomarCarta(Carta *carta) {
+
+void Jugador::agregarEjercitos(Territorio territorio) {
+  list<Territorio>::iterator itM = this->getTerritorios().begin();
+  for( ; itM != this->getTerritorios().end(); itM++)
+    {
+      if(itM->getNombre() == territorio.getNombre())
+      {
+        itM->agregarEjercitos(1);
+      }
+    }
+}
+
+bool Jugador::tomarCarta(Carta carta) {
   cartas.push_back(carta);
   return true;
 }
 
-bool Jugador::obtenerNuevasUnidades(char option) {
-  switch(option)
+bool Jugador::obtenerNuevasUnidades(Continentes mapa) {
+
+  // option 1
+  int cantTerritorios = territorios.size();
+  int unidadesAdicionales = cantTerritorios / 3;
+  this->ejercitosJugador += unidadesAdicionales;
+
+  // option 2
+  string continente;
+
+  Continentes::iterator itMapa = mapa.begin();
+  for( ; itMapa != mapa.end(); itMapa++)
     {
-      case A:
-        int cantTerritorios = territorios.size();
-        int unidadesAdicionales = cantTerritorios / 3;
-        
-      break;
+      int size = itMapa->size();
+      int counter = 0;
+      Paises::iterator itPais = itMapa->begin();
+      for( ; itPais != itMapa->end(); itPais++)
+        {
+          for(auto itTerreno : this->getTerritorios())
+            {
+              if(*itPais == itTerreno.getNombre())
+              {
+                counter++;
+              }
+            }
+        }
 
-      case B:
-      break;
-
-      case C:
-      break;
+      if(size == counter)
+      {
+        continente = *itMapa->begin();
+      }
     }
+
+    if(continente == "America del Sur" || continente == "Australia") {
+      this->ejercitosJugador += 2;
+    } else if(continente == "Africa") {
+        this->ejercitosJugador += 3;
+    } else if(continente == "America del Norte" || continente == "Europa") {
+        this->ejercitosJugador += 5;
+    } else if(continente == "Asia") {
+        this->ejercitosJugador += 7;
+    } else { return false; }
+
+  // option 3 (jeje)
+
+  
+  return true;
 }
 
 bool Jugador::atacarTerritorioVecino() {
@@ -52,11 +98,11 @@ void Jugador::agregarPuntuacion(int puntuacion) {
   this->puntuacion = puntuacion;
 }
 
-vector<Territorio *> Jugador::getTerritorio() const {
+list<Territorio> Jugador::getTerritorios() const {
   return this->territorios;
 }
 
-void Jugador::setTerritorio(Territorio *territorio) {
+void Jugador::setTerritorio(Territorio territorio) {
   territorios.push_back(territorio);
 }
 
@@ -75,10 +121,10 @@ void Jugador::colocarEjercitos(Jugador &jugador) {
   }
 
   cout << "Territorios disponibles para colocar ejércitos: " << endl;
-  vector<Territorio *> territorios = jugador.getTerritorio();
-  for (int i = 0; i < territorios.size(); ++i) {
+  list<Territorio > territorios = jugador.getTerritorios();
+  /*for (int i = 0; i < territorios.size(); ++i) {
     cout << i + 1 << ". " << territorios[i]->getNombre() << endl;
-  }
+  }*/
 
   int territorioIndex;
   cout << "Ingrese el número del territorio donde desea colocar ejércitos: ";
@@ -91,11 +137,13 @@ void Jugador::colocarEjercitos(Jugador &jugador) {
     territorioIndex--;
   }
 
+  /*
   territorios[territorioIndex]->agregarEjercitos(cantidad);
   jugador.agregarEjercitos(jugador.getEjercitos() - cantidad);
 
   cout << "Se han colocado " << cantidad << " ejércitos en "
        << territorios[territorioIndex]->getNombre() << endl;
+*/
 }
 
 int imprimirDados(int caso) {

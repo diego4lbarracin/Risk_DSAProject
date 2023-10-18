@@ -17,18 +17,24 @@ public:
   Territorio(const string &nombre, int ejercitos)
       : nombre(nombre), ejercitos(ejercitos) {}
 
-  void recopilarVecinos(const vector<Territorio *> &vecinosList);
+  //Getters
+  string getNombre();
+  int getEjercitos();
+  list<string> getVecinos();
+
+  //Setters
+  void recopilarVecinos(list<list<string>> vecinos);
+
+  void setVecinos(list<string> vecinos);
 
   void mostrarVecinos() const;
-
-  string getNombre();
 
   void agregarEjercitos(int cantidad);
 
 private:
   string nombre;
   int ejercitos;
-  vector<Territorio *> vecinos;
+  list<string> vecinos;
 };
 
 class Carta {
@@ -50,18 +56,22 @@ class Jugador {
 public:
   Jugador(const string &nombre, const string &color, int ejercitos);
 
+//Getters
   string getNombre() const;
   string getColor() const;
   int getEjercitos() const;
-  vector<Territorio *> getTerritorio() const;
-  void agregarEjercitos(int cantidad);
-  bool ocuparTerritorio(Territorio *territorio);
-  bool tomarCarta(Carta *carta);
-  bool obtenerNuevasUnidades();
+  list<Territorio> getTerritorios() const;
+  list<Carta> getCartas() const;
+
+//Modifiers
+  bool ocuparTerritorio(Territorio territorio);
+  void agregarEjercitos(Territorio territorio);
+  bool tomarCarta(Carta carta);
+  bool obtenerNuevasUnidades(Continentes mapa);
   bool atacarTerritorioVecino();
   void agregarPuntuacion(int puntuacion);
   void colocarEjercitos(Jugador &jugador);
-  void setTerritorio(Territorio *territorio);
+  void setTerritorio(Territorio territorio);
   void lanzarDados(string turno);
 
 private:
@@ -69,23 +79,30 @@ private:
   string colorJugador;
   int ejercitosJugador;
   int puntuacion;
-  vector<Territorio *> territorios;
-  vector<Carta *> cartas;
+  list<Territorio> territorios;
+  list<Carta> cartas;
 };
+
+
 
 class Juego {
 public:
+
   void llenarJugadores();
 
-  void llenarMundo();
+  Continentes llenarMultilista();
 
-  void llenarBarajaCartas();
+  list<Territorio> llenarMundo(Continentes mundo);
 
-  void calcularInfanteria(vector<Jugador> *jugadores) const;
+  stack<Carta> llenarBarajaCartas();
 
-  bool validarEnCurso();
+  int calcularInfanteria(int cantidad);
 
-  void establecerTurnos();
+  bool validarEnCurso(vector<Jugador> jugadores);
+
+  void establecerTurnos(vector<Jugador> jugadores);
+
+  list<Territorio> llenarVecinos(list<Territorio> territorios);
 
 private:
   vector<Jugador> jugadores;

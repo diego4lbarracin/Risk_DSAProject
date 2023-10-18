@@ -1,0 +1,42 @@
+Alaska	Alberta	Territorio Noroccidental	Kamchatka
+Alberta	Alaska	Territorio Noroccidental	Ontario	Estados Unidos Occidentales
+America Central	Estados Unidos Occidentales	Estados Unidos Orientales	Venezuela
+Estados Unidos Orientales	America Central	Ontario	Quebec	Estados Unidos Occidentales
+Groenlandia	Territorio Noroccidental	Ontario	Quebec	Islandia
+Territorio Noroccidental	Alaska	Alberta	Groenlandia	Ontario
+Ontario	Alberta	Estados Unidos Orientales	Groenlandia	Territorio Noroccidental	Quebec	Estados Unidos Occidentales
+Quebec	Estados Unidos Orientales	Groenlandia	Ontario
+Estados Unidos Occidentales	Alberta	America Central	Estados Unidos Orientales
+Argentina	Brasil	Peru
+Brasil	Argentina	Peru	Venezuela	Africa del Norte
+Peru	Argentina	Brasil	Venezuela
+Venezuela	Brasil	Peru	America Central
+Gran Bretana	Islandia	Europa del Norte	Escandinavia	Europa Occidental
+Islandia	Gran Bretana	Escandinavia	Groenlandia
+Europa del Norte	Gran Bretana	Escandinavia	Europa del Sur	Ucrania	Europa Occidental
+Escandinavia	Gran Bretana	Islandia	Europa del Norte	Ucrania
+Europa del Sur	Europa del Norte	Ucrania	Europa Occidental	Egipto	Africa del Norte	Medio Oriente
+Ucrania	Europa del Norte	Escandinavia	Europa del Sur	Afghanistan	Medio Oriente	Ural
+Europa Occidental	Gran Bretana	Europa del Norte	Europa del Sur	Japon
+Afghanistan	China	India	Medio Oriente	Ural	Ucrania
+China	Afghanistan	India	Mongolia	Siam	Siberia	Ural
+India	Afghanistan	China	Medio Oriente	Siam
+Irkutsk	Kamchatka	Mongolia	Siberia	Yakutsk
+Japon	Kamchatka	Mongolia
+Kamchatka	Irkutsk	Japon	Mongolia	Yakutsk	Alaska
+Medio Oriente	Afghanistan	India	Europa del Sur	Ucrania	Egipto
+Mongolia	China	Irkutsk	Japon	Kamchatka	Siberia
+Siam	China	India	Indonesia
+Siberia	China	Irkutsk	Mongolia	Ural	Yakutsk
+Ural	Afghanistan	China	Siberia	Ucrania
+Yakutsk	Irkutsk	Kamchatka	Siberia
+Congo	Africa Oriental	Africa del Norte	Africa del Sur
+Africa Oriental	Congo	Egipto	Madagascar	Africa del Norte	Africa del Sur
+Egipto	Afica Oriental	Africa del Norte	Europa del Sur	Medio Oriente
+Madagascar	Africa Oriental	Africa del Sur
+Africa del Norte	Congo	Africa Oriental	Egipto	Europa del Sur	Europa Occidental	Brasil
+Africa del Sur	Congo	Africa Oriental	Madagascar
+Australia Oriental	Nueva Guinea	Australia Occidental
+Indonesia	Nueva Guinea	Australia Occidental	Siam
+Nueva Guinea	Australia Oriental	Indonesia	Australia Occidental
+Australia Occidental	Australia Oriental	Indonesia	Nueva Guinea
