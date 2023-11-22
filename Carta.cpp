@@ -6,17 +6,9 @@ void Carta::mostrarContenido() const {
 }
 
 char Carta::getTipo() {
-  if (!tipo) {
-    return tipo;
-  } else {
-    return -1;
-  }
+  return this->tipo;
 }
 
 string Carta::getTerritorio() {
-  if (territorio != "") {
-    return territorio;
-  } else {
-    return "";
-  }
+  return this->territorio;
 }

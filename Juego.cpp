@@ -53,14 +53,14 @@ list<Territorio> Juego::llenarMundo(Continentes mundo) {
       for( ; itPais != itMundo->end(); itPais++)
         {
           //cout << "Pais: " << *itPais << endl;
-          Territorio t = Territorio(*itPais, 0);
+          Territorio t = Territorio(*itPais);
           territorios.push_back(t);
         }
   }  
   return territorios;
 }
 
-stack<Carta> Juego::llenarBarajaCartas() {
+vector<Carta> Juego::llenarBarajaCartas() {
   ifstream myFile;
   myFile.open("world.txt");
 
@@ -115,10 +115,10 @@ stack<Carta> Juego::llenarBarajaCartas() {
 
   random_shuffle(cartas.begin(), cartas.end());
 
-  stack<Carta> baraja;
+  vector<Carta> baraja;
   for(Carta c : cartas)
     {
-      baraja.push(c);
+      baraja.push_back(c);
     }
 
   return baraja;

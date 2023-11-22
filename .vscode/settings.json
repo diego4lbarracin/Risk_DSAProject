@@ -1,0 +1,10 @@
+{
+    "C_Cpp.default.compilerPath": "C:\\MinGW\\bin\\g++.exe",
+    "files.associations": {
+        "iomanip": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "fstream": "cpp",
+        "*.tcc": "cpp"
+    }
+}

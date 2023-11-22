@@ -1,0 +1,32 @@
+Cantidad de Jugadores: 3
+
+Nombre: Giseth
+Color: Rojo
+Cantidad de territorios que ocupa: 2
+Territorio: Egipto
+ -CantEjercitos: 1
+Territorio: Argentina
+ -CantEjercitos: 1
+Numero de cartas que posee: 2
+Carta: I
+Carta: I
+
+Nombre: Carlos
+Color: Verde
+Cantidad de territorios que ocupa: 2
+Territorio: Congo
+ -CantEjercitos: 1
+Territorio: Alaska
+ -CantEjercitos: 1
+Numero de cartas que posee: 2
+Carta: I
+Carta: I
+
+Nombre: Diego
+Color: Azul
+Cantidad de territorios que ocupa: 1
+Territorio: Brasil
+ -CantEjercitos: 1
+Numero de cartas que posee: 1
+Carta: I
+

@@ -3,42 +3,48 @@
 #include <string>
 
 
-Jugador::Jugador(const string &nombre, const string &color, int ejercitos)
-    : nombreJugador(nombre), colorJugador(color), ejercitosJugador(ejercitos) {
+Jugador::Jugador(const string &nombre, const string &colorJ, int cantEjercitos)
+    : nombreJugador(nombre), color(colorJ), ejercitosJugador(cantEjercitos){
   territorios.clear(); // Inicializa la lista de territorios
   cartas.clear();      // Inicializa la lista de cartas
 }
 
-string Jugador::getNombre() const { return nombreJugador; }
+string Jugador::getNombre() const { return this->nombreJugador; }
 
-string Jugador::getColor() const { return colorJugador; }
+string Jugador::getColor() const { return this->color; }
 
-int Jugador::getEjercitos() const { return ejercitosJugador; }
+int Jugador::getCantEjercitos() const { return this->ejercitosJugador; }
 
 list<Carta> Jugador::getCartas() const { return this->cartas; }
 
+//Setters
+void Jugador::setNombre(string nombre) { this->nombreJugador = nombre; }
+void Jugador::setColor(string color) { this->color = color; }
+
 bool Jugador::ocuparTerritorio(Territorio territorio) {
-  territorio.agregarEjercitos(1);
-  this->ejercitosJugador--;
-  territorios.push_back(territorio);
-  return true;
+     Ejercito tropaInicial;
+     tropaInicial.tipo = 'I';
+     tropaInicial.colorEj = getColor(); 
+     territorio.agregarEjercitos(tropaInicial);
+     this->ejercitosJugador--;
+     territorios.push_back(territorio);
+     return true;
 }
 
 
-void Jugador::agregarEjercitos(Territorio territorio) {
+void Jugador::agregarEjercitos(Territorio territorio, Ejercito tropaNueva) {
   list<Territorio>::iterator itM = this->getTerritorios().begin();
   for( ; itM != this->getTerritorios().end(); itM++)
     {
       if(itM->getNombre() == territorio.getNombre())
       {
-        itM->agregarEjercitos(1);
+        itM->agregarEjercitos(tropaNueva);
       }
     }
 }
 
-bool Jugador::tomarCarta(Carta carta) {
+void Jugador::tomarCarta(Carta carta) {
   cartas.push_back(carta);
-  return true;
 }
 
 bool Jugador::obtenerNuevasUnidades(Continentes mapa) {
@@ -109,13 +115,13 @@ void Jugador::setTerritorio(Territorio territorio) {
 void Jugador::colocarEjercitos(Jugador &jugador) {
   int cantidad;
   cout << "Turno de " << jugador.getNombre() << endl;
-  cout << "Cantidad de ejércitos disponibles: " << jugador.getEjercitos()
+  cout << "Cantidad de ejércitos disponibles: " << jugador.getCantEjercitos()
        << endl;
 
   cout << "Ingrese la cantidad de ejércitos que desea colocar: ";
   cin >> cantidad;
 
-  while (cantidad > jugador.getEjercitos()) {
+  while (cantidad > jugador.getCantEjercitos()) {
     cout << "No tiene suficientes ejércitos. Ingrese una cantidad válida: ";
     cin >> cantidad;
   }

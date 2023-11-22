@@ -2,43 +2,55 @@
 #define TAD_H
 
 #include <iostream>
+#include <list>
 #include <stack>
 #include <string>
 #include <vector>
-#include <list>
 using namespace std;
 
 typedef list<string> Paises;
 typedef list<Paises> Continentes;
 
+struct Ejercito{
+  char tipo;
+  string colorEj;
+};
+
 // Clase Territorio y Carta
 class Territorio {
 public:
-  Territorio(const string &nombre, int ejercitos)
-      : nombre(nombre), ejercitos(ejercitos) {}
+  Territorio(const string &nombre);
 
-  //Getters
+  // Getters
   string getNombre();
-  int getEjercitos();
+  list<Ejercito> getEjercitos();
   list<string> getVecinos();
 
-  //Setters
+  // Setters
+
+  void setNombre(string nombre);
+
+  void setEjercitos(Ejercito ejercitoNuevo);
+
   void recopilarVecinos(list<list<string>> vecinos);
 
   void setVecinos(list<string> vecinos);
 
   void mostrarVecinos() const;
 
-  void agregarEjercitos(int cantidad);
+  void agregarEjercitos(Ejercito tropa);
+
+  vector<Territorio> calcularRuta(Territorio destino);
 
 private:
   string nombre;
-  int ejercitos;
+  list<Ejercito> ejercitos;
   list<string> vecinos;
 };
 
 class Carta {
 public:
+
   Carta(char tipo, const string &territorio)
       : tipo(tipo), territorio(territorio) {}
 
@@ -52,21 +64,26 @@ private:
   char tipo;
   string territorio;
 };
+
 class Jugador {
 public:
-  Jugador(const string &nombre, const string &color, int ejercitos);
+  Jugador(const string &nombre, const string &colorJ, int cantEjercitos);
 
-//Getters
+  // Getters
   string getNombre() const;
   string getColor() const;
-  int getEjercitos() const;
+  int getCantEjercitos() const;
   list<Territorio> getTerritorios() const;
   list<Carta> getCartas() const;
 
-//Modifiers
+  //Setters
+  void setNombre(string nombre);
+  void setColor(string color);
+
+  // Modifiers
   bool ocuparTerritorio(Territorio territorio);
-  void agregarEjercitos(Territorio territorio);
-  bool tomarCarta(Carta carta);
+  void agregarEjercitos(Territorio territorio, Ejercito tropaNueva);
+  void tomarCarta(Carta carta);
   bool obtenerNuevasUnidades(Continentes mapa);
   bool atacarTerritorioVecino();
   void agregarPuntuacion(int puntuacion);
@@ -76,25 +93,22 @@ public:
 
 private:
   string nombreJugador;
-  string colorJugador;
+  string color;
   int ejercitosJugador;
   int puntuacion;
   list<Territorio> territorios;
   list<Carta> cartas;
 };
 
-
-
 class Juego {
 public:
-
   void llenarJugadores();
 
   Continentes llenarMultilista();
 
   list<Territorio> llenarMundo(Continentes mundo);
 
-  stack<Carta> llenarBarajaCartas();
+  vector<Carta> llenarBarajaCartas();
 
   int calcularInfanteria(int cantidad);
 
@@ -109,6 +123,16 @@ private:
   Continentes mundo;
   stack<Carta> cartas;
   int intercambios;
+};
+
+class EstrategiaDeJuego {
+  public:
+  vector<Territorio> calcularConquista(Territorio origen, Territorio destino);
+  
+
+  private:
+
+
 };
 
 // Implementa más métodos según sea necesario

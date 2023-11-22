@@ -1,36 +1,44 @@
 /*
-* Proyecto RISK para Estructuras de Datos 2023-3
-* Autores:
-*   Giseth Villalobos
-*   Carlos D'Silvestri
-*   Diego Albarracin
-* Version: Entregable 2
-*
-*/
+ * Proyecto RISK para Estructuras de Datos 2023-3
+ * Autores:
+ *   Giseth Villalobos
+ *   Carlos D'Silvestri
+ *   Diego Albarracin
+ * Version: Entregable 2
+ *
+ */
 
 #include "TAD.h"
+#include "implementacionArbolHuffman.h"
 #include <bits/stdc++.h>
 //#include <windows.h>
 
 using namespace std;
 
 /* FIRMA DE LAS FUNCIONES */
-//void imprimirLogoInicio();
+// void imprimirLogoInicio();
 void menu();
 void ayuda();
 bool inicializar(bool inicializer);
 Territorio reclamarTerritorios();
-bool ponerEjercitosAdicionales();
+void ponerEjercitosAdicionales(Jugador, Ejercito);
 bool mostrar_unidades();
-bool mostrar_sitios();
+bool mostrar_sitios(list<Territorio>);
+bool mover_unidades(Jugador);
 bool reclutar();
 bool guardar(string nombreArchivoTexto);
+void leerDesdeArchivo(string nombreArch);
 void lanzarDados(string turno);
 int imprimirDados(int caso);
-void condicionesVictoria(vector<int> resultsDadoAtacante, int resultDadoDefensor);
+void condicionesVictoria(vector<int> resultsDadoAtacante,
+                         int resultDadoDefensor);
 /* VARIABLES GLOBALES */
 // Variables Globales para almacenar los 3 resultados de lanzar los
 // dados del atacante y el resultado de la suma de los dados del defensor
+void comprimirArhivoCodigoHuffman(string nombreArchivo);
+void descomprimirArchivoHuffman(string nombreArchivo);
+string nombreArch;
+
 vector<int> resultsDadoAtacante;
 int resultDadosDefensor;
 list<Jugador>::iterator itJugador;
@@ -51,8 +59,13 @@ list<Territorio> mundo = juego.llenarVecinos(mundoSinVecinos);
 // Crear la lista de jugadores
 list<Jugador> jugadores;
 // Barajar las cartas
-stack<Carta> mazo = juego.llenarBarajaCartas();
+vector<Carta> mazo = juego.llenarBarajaCartas();
 
+// Funciones para usar a lo largo del juego
+void mostrarTerritoriosDisponibles();
+void mostrarTamanoMazo();
+void mostrarVecinosUnTerritorio(string);
+void mostrarJugadoresCaracteristicas();
 
 int main() {
   // int userInput: Variable para almacenar la entrada del usuario en el
@@ -71,6 +84,8 @@ int main() {
   // turnos totales que se pueden hacer
   int totalTurnos = 10;
   do {
+      Territorio terrenoS("");
+      int counterC = 0;
 
     if (inicializer == false) {
       // imprimirLogoInicio();
@@ -80,6 +95,7 @@ int main() {
            << endl;
       cout << endl;
       cout << "* Selecciona 2 para empezar a jugar" << endl;
+      cout << "* Selecciona 3 para cargar un juego desde un archivo " << endl;
       cout << "* Si deseas salir del juego escribe 0 para salir *";
       cout << endl;
       // Switch-case que recibe la opcion en userInput e inicializa
@@ -94,13 +110,41 @@ int main() {
         break;
       case 2:
         // Inicializacion del juego, al cambiar el valor de 'false' a 'true'
-        // el programa entra el menu principal.
-        inicializer = inicializar(inicializer);
+        // el programa entra el menu principal
+
+      inicializer = inicializar(inicializer);
+      itJugador = jugadores.begin();
+      while(counterC < 5)
+      {
+        if(itJugador == jugadores.end())
+        {
+          itJugador = jugadores.begin();
+        }
+        cout << "Jugador: " << itJugador->getNombre() << endl;
+        terrenoS = reclamarTerritorios();
+        cout << endl << "Territorio reclamado con éxito " << endl;
+        Carta cartaNueva('I', terrenoS.getNombre());
+        itJugador->tomarCarta(cartaNueva);
+        itJugador->ocuparTerritorio(terrenoS);
+        counterC++;
+        itJugador++;
+      }
+
         /*
-        este código es para recorrer lo que retorna la funcion de llenarVecinos()
+        este código es para recorrer lo que retorna la funcion de
+        llenarVecinos()
         */
         cout << inicializer;
         cout << endl;
+        break;
+
+      case 3:
+        cout << "Ingrese el nombre del archivo donde se encuentran los datos" << endl;
+        cin >> nombreArch;
+
+        leerDesdeArchivo(nombreArch);
+
+        inicializer = true;
         break;
       case 0:
         break;
@@ -113,141 +157,142 @@ int main() {
     }
 
     if (inicializer == true) {
-
       for (int turno = 1; turno <= totalTurnos; ++turno) {
         for (itJugador = jugadores.begin(); itJugador != jugadores.end(); ++itJugador) {
+              cout << "Turno " << turno
+                  << " - Jugador: " << itJugador->getNombre() << endl;
+
+          //mostrarTerritoriosDisponibles();
+          //mostrarTamanoMazo();
+          //mostrarVecinosUnTerritorio(terVec);
+          //mostrarJugadoresCaracteristicas();
+
           menu();
-           std::cout << "Turno " << turno
-                  << " - Jugador: " << itJugador->getNombre()
-                  << std::endl;
-          
-        cout << "$ ";
-        cin >> userInput;
+          cout << "$ ";
+          cin >> userInput;
 
-        optionVerifier = userInput;
-        // Switch-case con las opciones del juego.
-        switch (userInput) {
-        case 1:
-          ayuda();
-          break;
-        case 3:
-          if (mostrar_unidades()) {
-            cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
-          break;
-        case 4:
-          if (mostrar_sitios()) {
-            cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+          optionVerifier = userInput;
+          // Switch-case con las opciones del juego.
 
-          break;
-        case 5:
-          Territorio terrenoSel = reclamarTerritorios();
-          Carta cartaNueva = mazo.top();
-          itJugador->tomarCarta(cartaNueva);
-          if (itJugador->ocuparTerritorio(terrenoSel)) {
+          switch (userInput) {
+          case 0:
+            cout << "saliendo..." << endl;
+            exit(0);
+            break;
+          case 1:
+            ayuda();
+            break;
+          case 3:
             cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            ponerEjercitosAdicionales();
+            cout << "--- Comando para mostrar unidades ---" << endl;
+            if (mostrar_unidades()) {
+              cout << endl;
+              cout << "Comando ejecutado con éxito" << endl;
+              cout << endl;
+            } else {
+              cout << endl;
+              cout << "Comando no ejecutado con éxito" << endl;
+              cout << endl;
+            }
+            break;
+          case 4:
             cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+            cout << "--- Comando para mostrar sitios ---" << endl;
+            if (mostrar_sitios(itJugador->getTerritorios())) {
+              cout << endl;
+              cout << "Comando ejecutado con éxito" << endl;
+              cout << endl;
+            } else {
+              cout << endl;
+              cout << "Comando no ejecutado con éxito" << endl;
+              cout << endl;
+            }
+            break;
+          case 5:
+            if(mover_unidades(*itJugador)) {
+              cout << endl;
+              cout << "Comando ejecutado con éxito" << endl;
+              cout << endl;
+            } else {
+              cout << endl;
+              cout << "Comando no ejecutado con éxito" << endl;
+              cout << endl;
+            }
+            break;
+            /*case 6:
+              if (itJugador->atacarTerritorioVecino()) {
 
-        break;
-        /*case 6:
-          if (itJugador->atacarTerritorioVecino()) {
-              
-            cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+                cout << endl;
+                cout << "Comando ejecutado con exito" << endl;
+                cout << endl;
+              } else {
+                cout << endl;
+                cout << "Comando no ejecutado con exito" << endl;
+                cout << endl;
+              }
 
-          break;
-        case 7:
-          if (itJugador->obtenerNuevasUnidades()) {
-            cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+              break;
+            case 7:
+              if (itJugador->obtenerNuevasUnidades()) {
+                cout << endl;
+                cout << "Comando ejecutado con exito" << endl;
+                cout << endl;
+              } else {
+                cout << endl;
+                cout << "Comando no ejecutado con exito" << endl;
+                cout << endl;
+              }
 
-          break;
-        case 8:
-          if (itJugador->tomarCarta(mazo.top())) {
-            cout << endl;
-            cout << "Comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "Comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+              break;
+            case 8:
+              if (itJugador->tomarCarta(mazo.top())) {
+                cout << endl;
+                cout << "Comando ejecutado con exito" << endl;
+                cout << endl;
+              } else {
+                cout << endl;
+                cout << "Comando no ejecutado con exito" << endl;
+                cout << endl;
+              }
 
-          break;*/
-        case 9:
-          string nombreArch;
-          cout << "Ingrese el nombre del archivo de texto" << endl;
-          cin >> nombreArch;
-          if (guardar(nombreArch)) {
-            cout << endl;
-            cout << "comando ejecutado con exito" << endl;
-            cout << endl;
-          } else {
-            cout << endl;
-            cout << "comando no ejecutado con exito" << endl;
-            cout << endl;
-          }
+              break;*/
+          case 9:
+            cout << "Ingrese el nombre del archivo de texto" << endl;
+            cin >> nombreArch;
+            if (guardar(nombreArch)) {
+              cout << endl;
+              cout << "Comando ejecutado con éxito" << endl;
+              cout << endl;
+            } else {
+              cout << endl;
+              cout << "Comando no ejecutado con éxito" << endl;
+              cout << endl;
+            }
+            break;
 
-          break;
-        case 0:
-          cout<<"saliendo..."<<endl;
-          break;
-        default:
-          if (optionVerifier <= 0 || optionVerifier > 9) {
-            cout << endl;
-            cout << "Ingrese una opcion correcta" << endl;
-            cout << endl;
+          default:
+            if (optionVerifier <= 0 || optionVerifier > 9) {
+              cout << endl;
+              cout << "Ingrese una opción correcta" << endl;
+              cout << endl;
+            }
+            break;
           }
 
-          break;
-        }
-        
-        // Aquí iría la lógica del juego para el jugador actual
+          // Aquí iría la lógica del juego para el jugador actual
 
-        // Simulamos incrementar la puntuación del jugador
-        //jugadores[jugadorActual].agregarPuntuacion(10);
+          // Simulamos incrementar la puntuación del jugador
+          // jugadores[jugadorActual].agregarPuntuacion(10);
 
-        // Cambio al siguiente jugador
-        jugadorActual = (jugadorActual + 1) % jugadores.size();
+          // Cambio al siguiente jugador
+          jugadorActual = (jugadorActual + 1) % jugadores.size();
         }
       }
     }
     // Condicion para que el menu se repita mientras el usuario no haya
     // presionado la opcion salir.
   } while (userInput != 0);
-  //system("Color 07");
+  // system("Color 07");
   return 0;
 }
 
@@ -257,7 +302,7 @@ void menu() {
   cout << endl;
   cout << "4. _-_ Mostrar Sitios _-_" << endl;
   cout << endl;
-  cout << "5. _-_ Ocupar Territorio _-_" << endl;
+  cout << "5. _-_ Mover unidades _-_" << endl;
   cout << endl;
   cout << "6. _-_ Atacar Territorio Vecino _-_" << endl;
   cout << endl;
@@ -293,7 +338,7 @@ void ayuda() {
     cout << endl;
     cout << "4. _-_ Mostrar Sitios _-_" << endl;
     cout << endl;
-    cout << "5. _-_ Ocupar Territorio _-_" << endl;
+    cout << "5. _-_ Mover unidades _-_" << endl;
     cout << endl;
     cout << "6. _-_ Atacar Territorio Vecino _-_" << endl;
     cout << endl;
@@ -329,9 +374,9 @@ void ayuda() {
               "sitios en general para poder ver el terreno que te falta por "
               "conquistar o que ya conquistaste"
            << endl;
-    } else if (userOption == "Ocupar Territorio") {
+    } else if (userOption == "Mover unidades") {
       cout << endl;
-      cout << "Ocupar Territorio -----> Este comando sirve para poder mover "
+      cout << "Mover unidades -----> Este comando sirve para poder mover "
               "tus tropas en tus territorios"
            << endl;
     } else if (userOption == "Atacar Territorio Vecino") {
@@ -398,16 +443,19 @@ bool inicializar(bool inicializer) {
 
   string nombreJugador;
   string colorJugador;
-  
+
   int cantJugadores;
   int ejercitosPorJugador;
   if (!inicializer) {
-    cout << "cuantos jugadores van a jugar? " << endl;
+    cout << "¿Cuantos jugadores van a jugar? " << endl;
     cin >> cantJugadores;
     if (cantJugadores < 3) {
-      cout << "la cantidad tiene que ser mayor a 3, vuela a inicializar el juego por favor" << endl;
+      cout << "la cantidad tiene que ser mayor a 3, vuela a inicializar el "
+              "juego por favor"
+           << endl;
       return false;
     } else {
+      cout << "--- Ingresando jugadores ---" << endl;
       switch (cantJugadores) {
       case 3:
         ejercitosPorJugador = 35;
@@ -424,20 +472,20 @@ bool inicializar(bool inicializer) {
       }
     }
 
-  for (int i = 0; i < cantJugadores; i++) {
-    cout << "digite el nombre del jugador: ";
-    cin >> nombreJugador;
-    cout << endl;
-    cout << "el color que desea utilizar: ";
-    cin >> colorJugador;
-    cout << endl;
+    for (int i = 0; i < cantJugadores; i++) {
+      cout << "Digite el nombre del jugador " << i + 1  << ": ";
+      cin >> nombreJugador;
+      cout << endl;
+      cout << "Digite el color que desea utilizar: ";
+      cin >> colorJugador;
+      cout << endl;
 
-    jugadores.push_back(
-      Jugador(nombreJugador, colorJugador, ejercitosPorJugador));
-    
-    cout << "jugador agregado" << endl;
-    cout<<endl;
-  }
+      jugadores.push_back(
+          Jugador(nombreJugador, colorJugador, ejercitosPorJugador));
+
+      cout << "-- Jugador agregado con exito --" << endl;
+      cout << endl;
+    }
     return true;
   } else {
     return false;
@@ -445,108 +493,109 @@ bool inicializar(bool inicializer) {
   return false;
 }
 
-Territorio reclamarTerritorios()
-{
+Territorio reclamarTerritorios() {
   string terrSelec;
-  int counter = 0;
-  cout << endl;
-  while(counter < 42)
-    {
-      cout << "¿Qué territorio desea conquistar como punto de partida?" << endl;
-      cin >> terrSelec;
-      // Se busca el territorio escogido
-      // Se añade a su lista de territorios
-      // Se elimina de la lista de territorios global
-      list<Territorio>::iterator itM = mundo.begin();
-      for( ; itM != mundo.end(); itM++)
-        {
-          if(terrSelec == itM->getNombre())
-          {
-            mundo.erase(itM);
-            return *itM;
-          }
-        }
-      counter++;
-    }
-}
-
-bool ponerEjercitosAdicionales()
-{
-  int counter = 0;
-  string terrSelec;
-  while(counter < jugadores.size())
-    {
-      for( ; itJugador != jugadores.end(); itJugador++)
-        {
-          cout << "Jugador " << itJugador->getNombre() << ". ¿A qué territorio desea adicionarle un ejército?" << endl;
-          cin >> terrSelec;
-          list<Territorio>::iterator itM = itJugador->getTerritorios().begin();
-          for( ; itM != itJugador->getTerritorios().end(); itM++)
-            {
-              if(terrSelec == itM->getNombre())
-              {
-                itJugador->agregarEjercitos(*itM);
-              }
-            }
-      if(itJugador->getEjercitos() == 0)
-      {
-        counter++;
-      }
+  cout << "¿Qué territorio desea conquistar como punto de partida?" << endl;
+  cin >> terrSelec;
+  // Se busca el territorio escogido
+  // Se añade a su lista de territorios
+  // Se elimina de la lista de territorios global
+  list<Territorio>::iterator itM = mundo.begin();
+  for (; itM != mundo.end(); itM++) {
+    if (terrSelec == itM->getNombre()) {
+      mundo.erase(itM);
+      return *itM;
     }
   }
-  return true;
+}
+
+void ponerEjercitosAdicionales(Jugador actual, Ejercito nuevaTropa) {
+  string terrSelec;
+  cout << ". ¿A qué territorio desea adicionarle un ejército?" << endl;
+  cin >> terrSelec;
+  list<Territorio>::iterator itM = actual.getTerritorios().begin();
+  for (; itM != actual.getTerritorios().end(); itM++) {
+    if (terrSelec == itM->getNombre()) {
+      actual.agregarEjercitos(*itM, nuevaTropa);
+    }
+  }
 }
 
 bool mostrar_unidades() {
   // Funcion para mostrar a las unidades.
-  cout << endl;
-  cout << "Comando para mostrar unidades" << endl;
-  for( ; itJugador != jugadores.end(); itJugador++)
-    {
-      cout << "Jugador: " << itJugador->getNombre() << endl;
-      cout << "Cantidad de tropas: " << itJugador->getEjercitos() << endl;
-    }
-  cout << endl;
+  for (itJugador = jugadores.begin(); itJugador != jugadores.end(); itJugador++) {
+    cout << "Jugador: " << itJugador->getNombre() << endl;
+    cout << "Cantidad de tropas: " << itJugador->getCantEjercitos() << endl;
+    cout << endl;
+  }
   return true;
 }
-bool mostrar_sitios() {
+bool mostrar_sitios(list<Territorio> conquistados) {
   // Funcion para mostrar sitios.
-  cout << endl;
-  cout << "Comando para mostrar sitios" << endl;
-  for( ; itJugador != jugadores.end(); itJugador++)
+  cout << "Lista de territorios";
+  if(conquistados.size() > 0) 
+  {
+    cout << " conquistados:\n";
+    list<Territorio>::iterator itTer = conquistados.begin();
+    for(; itTer != conquistados.end(); itTer++)
     {
-      cout << "Jugador: " << itJugador->getNombre() << endl;
-      cout << "Territorios" << endl;
-      list<Territorio>::iterator itT = itJugador->getTerritorios().begin();
-      for( ; itT != itJugador->getTerritorios().end(); itT++)
-        {
-          cout << itT->getNombre() << endl;
-        }
-    }
+      cout << " \n- " << itTer->getNombre();
+    } 
+  } else {
+    cout << ": Actualmente no tiene territorios conquistados" << endl;
+  }
   cout << endl;
   return true;
 }
-
 
 bool reclutar() {
-  //La funcion reclutar permite reclutar a soldados para la tropa.
-    cout << endl;
-    cout << "Comando para reclutar unidades" << endl;
-    
-    cout << endl;
-    return true;
+  // La funcion reclutar permite reclutar a soldados para la tropa.
+  cout << endl;
+  cout << " --- Comando para reclutar unidades ---" << endl;
+
+  cout << endl;
+  return true;
 }
 
-/*
-bool mover() {
+bool mover_unidades(Jugador player) {
   //La funcion mover permite al jugador en turno mover
   //a sus soldados.
-    cout << endl;
-    cout << "Comando para mover unidades" << endl;
-    cout << endl;
-    return true;
+  string terrSel;
+  string option;
+  Ejercito tropaNueva;
+  cout << endl;
+  cout << " --- Comando para mover unidades ---" << endl;
+  cout << endl;
+  cout << "¿Desde cual de los sitios conquistados desea mover unidades?" << endl;
+  mostrar_sitios(player.getTerritorios());
+  cout << "Digite el nombre del territorio" << endl;
+  cin >> terrSel;
+  list<Territorio>::iterator itTer;
+  for(itTer = player.getTerritorios().begin(); itTer != player.getTerritorios().end(); itTer++)
+  {
+    if(itTer->getNombre() == terrSel)
+    {
+      cout << "Tienes las siguientes unidades en el territorio escogido " << endl;
+      cout << "Escribe 'y' en aquella que desees mover" << endl;
+      list<Ejercito>::iterator itEj;
+      for(itEj = itTer->getEjercitos().begin(); itEj != itTer->getEjercitos().end(); itEj++)
+      {
+        cout << "\n- " << itEj->tipo;
+        cin >> option;
+
+        if(option == "y")
+        {
+          tropaNueva = *itEj;
+          player.getTerritorios().erase(itTer);
+          break;
+        }
+      }
+    }
+  }
+  ponerEjercitosAdicionales(player, tropaNueva);
+  return true;
 }
-*/
+
 /*
 bool atacar() {
   //La funcion atacar permite al jugador en truno
@@ -572,33 +621,70 @@ bool guardar(string nombreArchivoTexto) {
   cout << endl;
   cout << "Comando para guardar la partida, se ejecuto con exito" << endl;
   // Crear y escribir en el archivo
-  ofstream archivo(nombreArchivoTexto.c_str());
+  std::fstream archivo;
+  archivo.open(nombreArchivoTexto.c_str(), ios::out);
   if (archivo.is_open()) {
-      archivo << "Cantidad de Jugadores: " << jugadores.size() << "\n\n";
-      for ( ; itJugador != jugadores.end(); itJugador++) {
-          archivo << "Nombre: " << itJugador->getNombre() << "\n";
-          archivo << "Color: " << itJugador->getColor() << "\n";
-          archivo << "Cantidad de territorios que ocupa: " << itJugador->getTerritorios().size() << "\n";
-          list<Territorio>::iterator itTerritorio = itJugador->getTerritorios().begin();
-          for ( ; itTerritorio != itJugador->getTerritorios().end(); itTerritorio++) {
-              archivo << "Territorio: " << itTerritorio->getNombre() << " - CantEjercitos: " << itTerritorio->getEjercitos() << "\n";
-          }
-          archivo << "Cantidad de cartas que posee: " << itJugador->getCartas().size() << "\n";
-          list<Carta>::iterator itCarta = itJugador->getCartas().begin();
-          for ( ; itCarta != itJugador->getCartas().end(); itCarta++) {
-              archivo << "Carta: " << itCarta->getTipo() << "\n";
-          }
-          archivo << "\n";
+    archivo << "Cantidad de Jugadores: " << jugadores.size() << "\n\n";
+    list<Jugador>::iterator itJugador = jugadores.begin();
+    for (; itJugador != jugadores.end(); itJugador++) {
+      archivo << "Nombre: " << itJugador->getNombre() << "\n";
+      archivo << "Color: " << itJugador->getColor() << "\n";
+      archivo << "Cantidad de territorios que ocupa: " << itJugador->getTerritorios().size() << "\n";
+      for(auto territorio : itJugador->getTerritorios())
+      {
+        archivo << "Territorio: " << territorio.getNombre() << "\n";
+        archivo << " -CantEjercitos: " << territorio.getEjercitos().size() << "\n";
       }
-      archivo.close();
-      cout << "Archivo generado exitosamente: " << endl;
+      archivo << "Numero de cartas que posee: " << itJugador->getCartas().size() << "\n";
+      for(auto carta: itJugador->getCartas())
+      {
+        archivo << "Carta: " << carta.getTipo() << "\n";
+      }
+      archivo << "\n";
+    }
+    archivo.close();
+    cout << "Archivo generado exitosamente: " << endl;
   } else {
-      cerr << "No se pudo abrir el archivo para escritura." << endl;
-}
+    cerr << "No se pudo abrir el archivo para escritura." << endl;
+  }
   cout << endl;
+  string nombreArchivo;
+  cout << "Ingrese el nombre del archivo a comprimir" << endl;
+  cin >> nombreArchivo;
+  comprimirArhivoCodigoHuffman(nombreArchivo);
+  cout << "Ingrese el nombre del archivo a descomprimir" << endl;
+  cin >> nombreArchivo;
+  descomprimirArchivoHuffman(nombreArchivo);
+
+  
   return true;
+
 }
 
+/*void guardar_ter(fstream archivo, list<Territorio> conquistados)
+{
+  if(archivo.is_open())
+  {
+    list<Territorio>::iterator itTerritorio;
+    for (itTerritorio = conquistados.begin(); itTerritorio != conquistados.end(); itTerritorio++) {
+    archivo << "Territorio: " << itTerritorio->getNombre() << "\n";
+    archivo << " - CantEjercitos: " << itTerritorio->getEjercitos().size() << "\n";
+    }
+  }
+
+  archivo.close();
+}
+
+void guardar_car(fstream archivo, list<Carta> mazo)
+{
+  if(archivo.is_open())
+  {
+    list<Carta>::iterator itCarta = mazo.begin();
+    for (; itCarta != mazo.end(); itCarta++) {
+      archivo << "Carta: " << itCarta->getTipo() << "\n";
+    }
+  }
+}*/
 
 /*
 void imprimirLogoInicio(){
@@ -698,3 +784,166 @@ void condicionesVictoria(vector<int> resultsDadoAtacante,
   }
 }
 
+void comprimirArhivoCodigoHuffman(string nombreArchivo) {
+  string data1;
+  ifstream file(nombreArchivo); // replace "input.txt" with your file name
+  if (file.is_open()) {
+    getline(file, data1);
+    file.close();
+  }
+  construrirArbol(data1);
+}
+
+void descomprimirArchivoHuffman(string nombreArchivo) {
+  string data1;
+  ifstream file(nombreArchivo); // replace "input.txt" with your file name
+  if (file.is_open()) {
+    getline(file, data1);
+    file.close();
+  }
+  descomprimir(data1);
+}
+
+void mostrarTerritoriosDisponibles()
+{
+  cout << "Territorios disponibles " << endl;
+  list<Territorio>::iterator itMundo = mundo.begin();
+  for( ; itMundo != mundo.end(); itMundo++)
+  {
+    cout << "Nombre: " << itMundo->getNombre() << endl;
+    //cout << "Ejercitos: " << itMundo->getEjercitos().size() << endl;
+  }
+}
+
+void mostrarTamanoMazo()
+{
+  cout << "Tamano del mazo: " << mazo.size() << endl;
+}
+
+void mostrarVecinosUnTerritorio(string terMostrar)
+{
+  cout << "Mostrando vecinos del territorio " << terMostrar << endl;
+  list<Territorio>::iterator itMundo = mundo.begin();
+  for( ; itMundo != mundo.end(); itMundo++)
+  {
+    if(itMundo->getNombre() == terMostrar)
+    {
+      itMundo->mostrarVecinos();
+    }
+  }
+}
+
+void mostrarJugadoresCaracteristicas()
+{
+  cout << "Mostrando jugadores " << endl;
+  for( ; itJugador != jugadores.end(); itJugador++)
+  {
+    cout << "Nombre: " << itJugador->getNombre() << endl;
+    cout << "Color: " << itJugador->getColor() << endl;
+    cout << "cantEj: " << itJugador->getCantEjercitos() << endl;
+    if(itJugador->getTerritorios().size() > 0) 
+    {
+      cout << "Lista de territorios" << endl;
+      list<Territorio>::iterator itTer = itJugador->getTerritorios().begin();
+      for(; itTer != itJugador->getTerritorios().end(); itTer++)
+      {
+        cout << "- " << itTer->getNombre() << endl;
+      } 
+    }
+    if(itJugador->getCartas().size() > 0)
+    {
+      cout << "Lista de cartas" << endl;
+      list<Carta>::iterator itCarta = itJugador->getCartas().begin();
+      for(; itCarta != itJugador->getCartas().end(); itCarta++)
+      {
+        cout << "- " << itCarta->getTipo() << " - " << itCarta->getTerritorio() << endl;
+      } 
+    }
+  }
+}
+
+void leerDesdeArchivo(string nombreArch)
+{
+  ifstream archivo(nombreArch.c_str());
+  if (!archivo.is_open()) {
+    cerr << "No se pudo abrir el archivo." << endl;
+  }
+  int cantidadJugadores;
+  archivo.seekg(23);
+  archivo >> cantidadJugadores;
+
+  int ejPJugador;
+  switch (cantidadJugadores) {
+    case 3:
+    ejPJugador = 35;
+    break;
+    case 4:
+    ejPJugador = 30;
+    break;
+    case 5:
+    ejPJugador = 25;
+    break;
+    case 6:
+    ejPJugador = 20;
+    break;
+  }
+
+  for (int i = 0; i <= cantidadJugadores; ++i) {
+    archivo.ignore();
+
+    string linea;
+    while (getline(archivo, linea)) {
+      cout << i << " Esta es la linea: " << linea << endl;
+      string clave, valor;
+      archivo >> clave >> valor;
+
+      cout << "Clave: " << clave << " Valor: " << valor << endl;
+
+      Jugador nuevoJugador(" ", " ", ejPJugador);
+      string nombreT;
+
+      if (clave == "Nombre:") {
+        nuevoJugador.setNombre(valor);
+      } else if (clave == "Color:") {
+        nuevoJugador.setColor(valor);
+      } else if (clave == "Cantidad") {
+        int cantTerritorios;
+        int pos = archivo.tellg();
+        archivo.seekg(pos-1);
+        archivo >> cantTerritorios;
+        for (int j = 0; j < cantTerritorios; ++j) {
+          int cantEjercitos;
+          archivo >> clave >> nombreT;
+          cout << "el nombre: " << nombreT << endl;
+          archivo >> clave >> cantEjercitos;
+          cout << "los ej en t : " << cantEjercitos << endl;
+          Territorio nuevoTerritorio(nombreT);
+          for(int k = 0; k < cantEjercitos; k++)
+          {
+            Ejercito e;
+            e.tipo = 'I';
+            e.colorEj = nuevoJugador.getColor();
+            nuevoTerritorio.agregarEjercitos(e);
+          }
+
+          nuevoJugador.getTerritorios().push_back(nuevoTerritorio);
+        }
+      } else if (clave == "Numero") {
+        int cantCartas;
+        int pos = archivo.tellg();
+        archivo.seekg(pos-4);
+        archivo >> cantCartas;
+        cout << "la cantidad de cartas: " << cantCartas << endl;
+        for(int k = 0; k < cantCartas; k++)
+        {
+          archivo >> clave >> valor;
+          Carta nuevaCarta('I', nombreT);
+          nuevoJugador.getCartas().push_back(nuevaCarta);
+        }
+        break;
+      }
+    }
+  }
+
+  archivo.close();
+}
